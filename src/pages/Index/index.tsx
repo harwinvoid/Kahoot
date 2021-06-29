@@ -2,13 +2,13 @@
  * @Author: yanghuayun
  * @Date: 2021-06-28 21:03:58
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 21:06:07
+ * @LastEditTime: 2021-06-29 21:57:09
  * @Description: file content
  */
 
 import React, { useEffect, useState } from "react";
 
-import { makeStyles, TextField, InputAdornment, Grid } from '@material-ui/core'
+import { makeStyles, TextField, Typography, InputAdornment, Grid } from '@material-ui/core'
 
 import { SearchOutlined } from '@material-ui/icons'
 import { useContract } from "../../hooks";
@@ -23,14 +23,16 @@ const useStyles = makeStyles((theme) => ({
     card: {
         margin: theme.spacing(2),
         display: 'flex',
-        height: 'calc(100vh - 120px)',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        color: '#fff'
     },
     title: {
         textAlign: 'center',
         flexGrow: 1,
+        marginTop: 48,
+        marginBottom: 64,
     },
     input: {
         fontSize: 64,
@@ -105,6 +107,9 @@ const Index: React.FC = () => {
     return (
         <div>
             <div className={styles.card}>
+                <Typography className={styles.title} variant="h3">
+                    StakeSteak x FTMAlerts
+                </Typography>
                 <div>
                     <TextField
                         InputProps={{
@@ -123,6 +128,7 @@ const Index: React.FC = () => {
                         onChange={handleSearch}
                     />
                 </div>
+
                 <Grid className={styles.listContainer} container spacing={4}>
                     {
                         filterList.map(item => <Grid item className={styles.center} xs={12} md={3}>

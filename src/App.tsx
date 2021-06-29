@@ -2,12 +2,12 @@
  * @Author: yanghuayun
  * @Date: 2021-06-28 20:50:58
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 21:18:13
+ * @LastEditTime: 2021-06-29 22:52:54
  * @Description: file content
  */
 import React, { useState } from 'react';
 
-import { Typography, Toolbar, Button, makeStyles, Container } from '@material-ui/core';
+import { Toolbar, Button, makeStyles, Container } from '@material-ui/core';
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
@@ -26,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     padding: theme.spacing(),
+    display: 'flex',
+    justifyContent: 'flex-end',
     background: 'inear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   },
   title: {
@@ -65,9 +67,6 @@ const App = () => {
       <div className={classes.root}>
         <div className={classes.header}>
           <Toolbar>
-            <Typography variant="h5" className={classes.title}>
-              StakeSteak x FTMAlerts
-            </Typography>
             <Wallet></Wallet>
           </Toolbar>
         </div>
