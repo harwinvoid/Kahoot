@@ -144,6 +144,11 @@
                 "type": "uint256"
             },
             {
+                "internalType": "uint256",
+                "name": "numberOfContestants",
+                "type": "uint256"
+            },
+            {
                 "internalType": "bool",
                 "name": "ended",
                 "type": "bool"
@@ -210,6 +215,56 @@
         "name": "enter",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getContestInfo",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "contract IERC20",
+                        "name": "entranceToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "contestName",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "hostingFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "entranceFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "rewardAmount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "numberOfContestants",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "ended",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct Contest.ContestInfo[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

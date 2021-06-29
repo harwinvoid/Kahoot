@@ -1,3 +1,7 @@
+/**
+ *Submitted for verification at FtmScan.com on 2021-06-28
+*/
+
 //SPDX-License-Identifier: None
 
 // File contracts/ERC20/IERC20.sol
@@ -352,6 +356,7 @@ contract Contest is Ownable {
         uint256 hostingFee;
         uint256 entranceFee;
         uint256 rewardAmount;
+        uint256 numberOfContestants;
         bool ended;
     }
 
@@ -364,6 +369,10 @@ contract Contest is Ownable {
     event ContestantAdded(address indexed contestant, string indexed userName);
     event ContestEnded(uint256 indexed cid);
     event RewardSent(address[] indexed winner, uint256 indexed cid, uint256 indexed amount);
+
+    function getContestInfo() external view returns (ContestInfo[] memory) {
+        return contestInfo;
+    }
 
     function setHostingFeeReceiver(address _feeReceiver) external onlyOwner {
         hostingFeeReceiver = _feeReceiver;
@@ -383,6 +392,7 @@ contract Contest is Ownable {
                 hostingFee: _hostingFee,
                 entranceFee: _entranceFee,
                 rewardAmount: _rewardAmount,
+                numberOfContestants: 0,
                 ended: false
             })
         );
@@ -420,6 +430,7 @@ contract Contest is Ownable {
             address(this),
             contest.entranceFee
         );
+        contest.numberOfContestants += 1;
         contestant.userName = _userName;
         contestant.entranceFeePaid = true;
         emit ContestantAdded(address(msg.sender), _userName);
