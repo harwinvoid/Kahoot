@@ -2,7 +2,7 @@
  * @Author: yanghuayun
  * @Date: 2021-06-29 21:02:52
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 23:03:44
+ * @LastEditTime: 2021-06-29 23:06:34
  * @Description: file content
  */
 
@@ -58,10 +58,10 @@ const useStyles = makeStyles((theme) => ({
     back: {
         marginBottom: 16,
         cursor: 'pointer',
-        width: 48,
-        height: 48,
+        width: 32,
+        height: 32,
         border: '1px solid #fff',
-        borderRadius: 48,
+        borderRadius: 32,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
