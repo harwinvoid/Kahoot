@@ -2,11 +2,11 @@
  * @Author: yanghuayun
  * @Date: 2021-06-29 02:14:43
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 21:16:03
+ * @LastEditTime: 2021-06-30 21:26:29
  * @Description: file content
  */
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -24,10 +24,11 @@ const useStyles = makeStyles({
 });
 
 interface ICard {
-  item: IContestItem
+  item: IContestItem, 
+  index: number,
 }
 
-const  ImgMediaCard:React.FC<ICard> = ({item}) => {
+const  ImgMediaCard:React.FC<ICard> = ({item, index}) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -36,7 +37,7 @@ const  ImgMediaCard:React.FC<ICard> = ({item}) => {
   const randomId = parseInt(`${Math.random() * 10 * 100}`, 10);
 
   const handleToDetail = () => {
-    history.push(`/${item.entranceToken}`);
+    history.push(`/${index}/${item.entranceToken}`);
   }
 
   return (

@@ -2,7 +2,7 @@
  * @Author: yanghuayun
  * @Date: 2021-06-29 01:05:48
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 01:36:14
+ * @LastEditTime: 2021-06-30 02:45:41
  * @Description: file content
  */
 
@@ -15,8 +15,6 @@ import { getContract } from "../utils"
 
 const useContract = (address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null => {
     const { account, library } = useWeb3React<Web3Provider>();
-
-    console.log(library)
 
     return useMemo(() => {
         if (!address || !ABI || !library) return null

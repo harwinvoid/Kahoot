@@ -2,17 +2,18 @@
  * @Author: yanghuayun
  * @Date: 2021-06-28 21:03:58
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 21:57:09
+ * @LastEditTime: 2021-06-30 21:31:14
  * @Description: file content
  */
 
 import React, { useEffect, useState } from "react";
 
-import { makeStyles, TextField, Typography, InputAdornment, Grid } from '@material-ui/core'
+import { TextField, Typography, InputAdornment, Grid } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
 
 import { SearchOutlined } from '@material-ui/icons'
 import { useContract } from "../../hooks";
-import { abi, contract } from "../../config";
+import { ABI, contract } from "../../config";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { useDebouncedCallback } from 'use-debounce';
@@ -21,7 +22,7 @@ import { IContestItem } from "../../interface";
 
 const useStyles = makeStyles((theme) => ({
     card: {
-        margin: theme.spacing(2),
+        margin: 16,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -66,7 +67,6 @@ export const formatItem = (data: any): IContestItem => {
     }
 }
 
-
 const Index: React.FC = () => {
     const styles = useStyles();
 
@@ -76,7 +76,7 @@ const Index: React.FC = () => {
 
     const [filterList, setFilterList] = useState<IContestItem[]>([]);
 
-    const contractInstance = useContract(contract, abi);
+    const contractInstance = useContract(contract, ABI);
 
     useEffect(() => {
         init()
@@ -131,9 +131,10 @@ const Index: React.FC = () => {
 
                 <Grid className={styles.listContainer} container spacing={4}>
                     {
-                        filterList.map(item => <Grid item className={styles.center} xs={12} md={3}>
-                            <ContestCard item={item}></ContestCard>
-                        </Grid>)
+                        filterList.map((item, index) => (
+                            <Grid item className={styles.center} xs={12} md={3}>
+                                <ContestCard index={index} item={item}></ContestCard>
+                            </Grid>))
                     }
                 </Grid>
 

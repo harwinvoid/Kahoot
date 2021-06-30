@@ -2,34 +2,41 @@
  * @Author: yanghuayun
  * @Date: 2021-06-29 21:02:52
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 23:06:34
+ * @LastEditTime: 2021-06-30 22:24:55
  * @Description: file content
  */
 
 import React, { useEffect, useState } from "react";
 
 import {
-    makeStyles,
     Typography,
     Grid,
     TextField,
     Button,
 } from "@material-ui/core";
 
+import { LoadingButton } from '@material-ui/lab';
+
+import { toast } from 'react-toastify';
+
+import { makeStyles } from '@material-ui//styles'
+
 import { useHistory, useParams } from "react-router-dom";
 
-import { ArrowBackRounded } from "@material-ui/icons";
+import { ArrowBackRounded, LockOutlined, ArrowRightAltOutlined } from "@material-ui/icons";
 
 import { useContract } from "../../hooks";
-import { abi, contract } from "../../config";
+import { ABI, contract } from "../../config";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import { MaxUint256 } from '@ethersproject/constants'
 import { IContestItem } from "../../interface";
 import { formatItem } from "../Index";
+import useTokenContract from "../../hooks/useTokenContract";
 
 const useStyles = makeStyles((theme) => ({
     card: {
-        margin: theme.spacing(2),
+        margin: 16,
         display: "flex",
         height: "calc(100vh - 120px)",
         flexDirection: "column",
@@ -37,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
     },
     desc: {
-        marginTop: theme.spacing(),
+        marginTop: 8,
     },
     title: {
         textAlign: "center",
@@ -45,15 +52,15 @@ const useStyles = makeStyles((theme) => ({
     },
     input: {
         width: 300,
-        marginTop: theme.spacing(3),
+        marginTop: 24,
     },
     listContainer: {
-        marginTop: theme.spacing(4),
+        marginTop: 32,
         justifyContent: "center",
         color: "#fff",
     },
     btn: {
-        marginTop: theme.spacing(3),
+        marginTop: 24,
     },
     back: {
         marginBottom: 16,
@@ -72,30 +79,40 @@ const Detail: React.FC = () => {
     const styles = useStyles();
     const history = useHistory();
 
+    const [approve, setApprove] = useState(false);
+
     //@ts-ignore
-    const { address } = useParams();
+    const { cid, token } = useParams();
 
     const [userName, setUserName] = useState("");
 
-    const { active } = useWeb3React<Web3Provider>();
+    const [btnLoading, setBtnLoading] = useState(false);
+
+    const { active, account } = useWeb3React<Web3Provider>();
 
     //@ts-ignore
     const [contest, setContest] = useState<IContestItem>({});
 
-    const contractInstance = useContract(contract, abi);
+    const contractInstance = useContract(contract, ABI);
 
-    console.log(active);
+    const tokenContract = useTokenContract(token);
+
+    console.log(active)
 
     useEffect(() => {
-        init();
+        if (active) {
+            init();
+        }
     }, [active]);
 
     const init = async () => {
         const data = await contractInstance?.getContestInfo();
+        const allowance = await tokenContract?.allowance(account, contract);
+        setApprove(allowance.gt(0));
 
         if (data) {
             const list = data.map((item: any) => formatItem(item));
-            const item = list.find((item: any) => item.entranceToken === address);
+            const item = list.find((item: any, index: number) => index === +cid);
             if (!item) {
                 history.push("/");
                 return;
@@ -105,83 +122,124 @@ const Detail: React.FC = () => {
     };
 
     const handleEnter = async () => {
-        await contractInstance?.enter(userName, 0);
+        try {
+            if (!approve) {
+                const tx = await tokenContract?.approve(contract, MaxUint256);
+                setBtnLoading(true);
+                toast('Approving', { autoClose: false, type: 'success'})
+                await tx.wait();
+                toast.dismiss();
+                setBtnLoading(false);
+                const data = await tokenContract?.allowance(account, contract);
+                setApprove(data.gt(0));
+                return;
+            }
+            await contractInstance?.enter(userName, 1);
+        } catch (error) {
+            toast(error.message, {autoClose: 3000, type: 'error'})
+        }
+        
     };
 
     return (
-        <Grid className={styles.listContainer} container spacing={4}>
-            <Grid item justify="center" alignItems="center" xs={12} md={12}>
+        <Grid className={styles.listContainer} container>
+            <Grid item xs={12} md={12}>
                 <div onClick={() => history.push('/')} className={styles.back} >
                     <ArrowBackRounded />
                 </div>
 
-                <Typography variant="h2">Test Contest</Typography>
+                <Typography variant="h2">{contest.contestName}</Typography>
             </Grid>
 
-            <Grid direction="column" item xs={12} md={8}>
-                <Typography variant="h3">About</Typography>
+            <Grid container xs={12} md={12}>
+                <Grid direction="column" container spacing={2} xs={12} md={8}>
+                    <Grid item><Typography variant="h3">About</Typography></Grid>
 
-                <Typography className={styles.desc} variant="body1">
-                    t is a long established fact that a reader will be distracted by the
-                    readable content of a page when looking at its layout. The point of
-                    using Lorem Ipsum is that it has a more-or-less normal distribution of
-                    letters, as opposed to using 'Content here, content here', making it
-                    look like readable English. Many desktop publishing packages and web
-                    page editors now use Lorem Ipsum as their default model text, and a
-                    search for 'lorem ipsum' will uncover many web sites still in their
-                    infancy. Various versions have evolved over the years, sometimes by
-                    accident, sometimes on purpose (injected humour and the like
-                </Typography>
+                    <Grid item><Typography variant="body1">
+                        t is a long established fact that a reader will be distracted by the
+                        readable content of a page when looking at its layout. The point of
+                        using Lorem Ipsum is that it has a more-or-less normal distribution of
+                        letters, as opposed to using 'Content here, content here', making it
+                        look like readable English. Many desktop publishing packages and web
+                        page editors now use Lorem Ipsum as their default model text, and a
+                        search for 'lorem ipsum' will uncover many web sites still in their
+                        infancy. Various versions have evolved over the years, sometimes by
+                        accident, sometimes on purpose (injected humour and the like
+                    </Typography>
+                    </Grid>
 
-                <TextField
-                    className={styles.input}
-                    label="Input your userName"
-                    color="secondary"
-                    variant="outlined"
-                    onChange={(e: any) => setUserName(e.target.value)}
-                />
+                    <Grid item>
+                        <TextField
+                            inputProps={{
+                                className: styles.input,
+                            }}
+                            label="Input your userName"
+                            color="secondary"
+                            variant="outlined"
+                            onChange={(e: any) => setUserName(e.target.value)}
+                        />
+                    </Grid>
 
-                <div className={styles.btn}>
-                    <Button
-                        disabled={!userName && !active}
-                        onClick={handleEnter}
-                        variant="contained"
-                        color="primary"
-                    >
-                        Enter Contest
-                    </Button>
-                </div>
+                    <Grid item>
+                        <LoadingButton
+                            loading={btnLoading}
+                            disabled={!userName || !active}
+                            onClick={handleEnter}
+                            variant="contained"
+                            color="primary"
+                            loadingPosition='end'
+                            endIcon={ approve ? <ArrowRightAltOutlined/> : <LockOutlined/>}
+                        >
+                            {approve ? 'Enter Contest' : 'Approve'}
+                        </LoadingButton>
+                    </Grid>
+
+                </Grid>
+                <Grid container direction="column" spacing={2} xs={12} md={4}>
+                    <Grid item>
+                        <Typography variant="h3">Contest Data</Typography>
+                    </Grid>
+
+
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Entrance Fee: {contest.entranceFee}
+                        </Typography>
+                    </Grid>
+
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            {contest.numberOfContestants} of Contestants
+                        </Typography>
+                    </Grid>
+
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            hosting Fee: {contest.hostingFee}
+                        </Typography>
+                    </Grid>
+
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Reward Amount: {contest.rewardAmount}
+                        </Typography>
+                    </Grid>
+
+                    <Grid item>
+                        <Typography variant="subtitle1">
+                            Ended: {contest.ended ? "Yes" : "No"}
+                        </Typography>
+                    </Grid>
+
+                    <Grid item>
+                        <Button variant="outlined" color="primary">
+                            Get Entrance Token
+                        </Button>
+                    </Grid>
+                </Grid>
             </Grid>
 
-            <Grid direction="column" item xs={12} md={4}>
-                <Typography variant="h3">Contest Data</Typography>
 
-                <Typography className={styles.desc} variant="subtitle1">
-                    Entrance Fee: {contest.entranceFee}
-                </Typography>
-
-                <Typography variant="subtitle1">
-                    {contest.numberOfContestants} of Contestants
-                </Typography>
-
-                <Typography variant="subtitle1">
-                    hosting Fee: {contest.hostingFee}
-                </Typography>
-
-                <Typography variant="subtitle1">
-                    Reward Amount: {contest.rewardAmount}
-                </Typography>
-
-                <Typography variant="subtitle1">
-                    Ended: {contest.ended ? "Yes" : "No"}
-                </Typography>
-
-                <div className={styles.btn}>
-                    <Button variant="outlined" color="primary">
-                        Get Entrance Token
-                    </Button>
-                </div>
-            </Grid>
         </Grid>
     );
 };

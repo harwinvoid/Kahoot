@@ -2,30 +2,35 @@
  * @Author: yanghuayun
  * @Date: 2021-06-28 20:50:58
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 22:52:54
+ * @LastEditTime: 2021-06-30 22:19:05
  * @Description: file content
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Toolbar, Button, makeStyles, Container } from '@material-ui/core';
+import { Toolbar, Button, Container } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/styles';
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import { ToastContainer, toast } from 'react-toastify';
 import { connectorsByName } from './config';
 
 import Index from './pages/Index';
-import './App.css';
 import { useBalance } from './hooks';
 import Detail from './pages/Detail';
+
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   header: {
-    padding: theme.spacing(),
+    padding: 8,
     display: 'flex',
     justifyContent: 'flex-end',
     background: 'inear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -47,11 +52,18 @@ function getLibrary(provider: any): Web3Provider {
 const Wallet = () => {
   const [login, setLogin] = useState(false);
   const balance = useBalance();
-  const { activate } = useWeb3React<Web3Provider>();
+  const { activate, error, active } = useWeb3React<Web3Provider>();
+
+  useEffect(() => {
+    if (error) {
+      toast(error.message, {type: 'error', autoClose: 3000})
+      return
+    }
+    setLogin(active);
+  }, [error, active])
 
   const connectWallet = async () => {
-    await activate(connectorsByName.injected)
-    setLogin(true)
+    activate(connectorsByName.injected)
   }
 
   return (
@@ -64,6 +76,7 @@ const App = () => {
   const classes = useStyles();
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
+      <ToastContainer></ToastContainer>
       <div className={classes.root}>
         <div className={classes.header}>
           <Toolbar>
@@ -76,7 +89,7 @@ const App = () => {
               <Route exact path='/'>
                 <Index />
               </Route>
-              <Route exact path='/:address'>
+              <Route exact path='/:cid/:token'>
                 <Detail />
               </Route>
             </Switch>

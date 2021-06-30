@@ -2,7 +2,7 @@
  * @Author: yanghuayun
  * @Date: 2021-06-28 21:00:05
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-29 13:36:59
+ * @LastEditTime: 2021-06-30 20:17:19
  * @Description: file content
  */
 import { InjectedConnector } from '@web3-react/injected-connector'
@@ -11,9 +11,13 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 
 import contractInterface from '../sol/abi.json';
 
+import erc20Interface from '../sol/erc20.json';
+
 export const contract = '0xe6419A52F84f4A95cE0f8dE2f9FD9683321BeD2e';
 
-export const abi = contractInterface;
+export const ABI = contractInterface;
+
+export const ERC20_ABI = erc20Interface;
 
 export const NETWORK_CHAIN_ID: number = parseInt('250')
 
