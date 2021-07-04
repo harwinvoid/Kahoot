@@ -2,7 +2,7 @@
  * @Author: yanghuayun
  * @Date: 2021-06-29 21:02:52
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-06-30 22:24:55
+ * @LastEditTime: 2021-07-01 21:17:20
  * @Description: file content
  */
 
@@ -62,17 +62,6 @@ const useStyles = makeStyles((theme) => ({
     btn: {
         marginTop: 24,
     },
-    back: {
-        marginBottom: 16,
-        cursor: 'pointer',
-        width: 32,
-        height: 32,
-        border: '1px solid #fff',
-        borderRadius: 32,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
 }));
 
 const Detail: React.FC = () => {
@@ -126,7 +115,7 @@ const Detail: React.FC = () => {
             if (!approve) {
                 const tx = await tokenContract?.approve(contract, MaxUint256);
                 setBtnLoading(true);
-                toast('Approving', { autoClose: false, type: 'success'})
+                toast('Approving', { autoClose: false, type: 'success' })
                 await tx.wait();
                 toast.dismiss();
                 setBtnLoading(false);
@@ -136,24 +125,20 @@ const Detail: React.FC = () => {
             }
             await contractInstance?.enter(userName, 1);
         } catch (error) {
-            toast(error.message, {autoClose: 3000, type: 'error'})
+            toast(error.message, { autoClose: 3000, type: 'error' })
         }
-        
+
     };
 
     return (
         <Grid className={styles.listContainer} container>
-            <Grid item xs={12} md={12}>
-                <div onClick={() => history.push('/')} className={styles.back} >
-                    <ArrowBackRounded />
-                </div>
-
-                <Typography variant="h2">{contest.contestName}</Typography>
+            <Grid style={{ marginBottom: '64px', display: 'flex', justifyContent: 'center' }} item xs={12} md={12}>
+                <Typography variant="h3">🏆{contest.contestName}</Typography>
             </Grid>
 
             <Grid container xs={12} md={12}>
                 <Grid direction="column" container spacing={2} xs={12} md={8}>
-                    <Grid item><Typography variant="h3">About</Typography></Grid>
+                    <Grid item><Typography variant="h4">About Contest</Typography></Grid>
 
                     <Grid item><Typography variant="body1">
                         t is a long established fact that a reader will be distracted by the
@@ -176,6 +161,9 @@ const Detail: React.FC = () => {
                             label="Input your userName"
                             color="secondary"
                             variant="outlined"
+                            sx={{
+                                width: { md: 'auto', xs: '100%' }
+                            }}
                             onChange={(e: any) => setUserName(e.target.value)}
                         />
                     </Grid>
@@ -187,8 +175,12 @@ const Detail: React.FC = () => {
                             onClick={handleEnter}
                             variant="contained"
                             color="primary"
+                            sx={{
+                                width: { md: 'auto', xs: '100%' },
+                                marginBottom: { md: 'auto', xs: '16px' },
+                            }}
                             loadingPosition='end'
-                            endIcon={ approve ? <ArrowRightAltOutlined/> : <LockOutlined/>}
+                            endIcon={approve ? <ArrowRightAltOutlined /> : <LockOutlined />}
                         >
                             {approve ? 'Enter Contest' : 'Approve'}
                         </LoadingButton>
@@ -197,7 +189,7 @@ const Detail: React.FC = () => {
                 </Grid>
                 <Grid container direction="column" spacing={2} xs={12} md={4}>
                     <Grid item>
-                        <Typography variant="h3">Contest Data</Typography>
+                        <Typography variant="h4">Contest Data</Typography>
                     </Grid>
 
 
@@ -232,7 +224,10 @@ const Detail: React.FC = () => {
                     </Grid>
 
                     <Grid item>
-                        <Button variant="outlined" color="primary">
+                        <Button sx={{
+                            width: { md: 'auto', xs: '100%' },
+                            marginBottom: { md: 'auto', xs: '16px' },
+                        }} variant="outlined" color="primary">
                             Get Entrance Token
                         </Button>
                     </Grid>
