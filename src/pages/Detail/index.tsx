@@ -2,7 +2,7 @@
  * @Author: yanghuayun
  * @Date: 2021-06-29 21:02:52
  * @LastEditors: yanghuayun
- * @LastEditTime: 2021-07-01 21:17:20
+ * @LastEditTime: 2021-07-07 11:24:21
  * @Description: file content
  */
 
@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui//styles'
 
 import { useHistory, useParams } from "react-router-dom";
 
-import { ArrowBackRounded, LockOutlined, ArrowRightAltOutlined } from "@material-ui/icons";
+import { LockOutlined, ArrowRightAltOutlined } from "@material-ui/icons";
 
 import { useContract } from "../../hooks";
 import { ABI, contract } from "../../config";
@@ -123,7 +123,8 @@ const Detail: React.FC = () => {
                 setApprove(data.gt(0));
                 return;
             }
-            await contractInstance?.enter(userName, 1);
+            console.log(cid, token)
+            await contractInstance?.enter(userName, cid);
         } catch (error) {
             toast(error.message, { autoClose: 3000, type: 'error' })
         }
@@ -224,10 +225,13 @@ const Detail: React.FC = () => {
                     </Grid>
 
                     <Grid item>
-                        <Button sx={{
-                            width: { md: 'auto', xs: '100%' },
-                            marginBottom: { md: 'auto', xs: '16px' },
-                        }} variant="outlined" color="primary">
+                        <Button
+                            sx={{
+                                width: { md: 'auto', xs: '100%' },
+                                marginBottom: { md: 'auto', xs: '16px' },
+                            }}
+                            onClick={() => window.open('https://dex.zoocoin.cash/orders/market?inputCurrency=FTM&outputCurrency=0x09e145A1D53c0045F41aEEf25D8ff982ae74dD56')}
+                            variant="outlined" color="primary">
                             Get Entrance Token
                         </Button>
                     </Grid>
